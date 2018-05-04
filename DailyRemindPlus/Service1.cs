@@ -24,7 +24,8 @@ namespace DailyRemindPlus
         {
             _scheduler = StdSchedulerFactory.GetDefaultScheduler();
 
-            IJobDetail jobDailyRemind = JobBuilder.Create<RemindJob>()
+            //日报
+            IJobDetail jobDailyRemind = JobBuilder.Create<WeekRemindJob>()
                .WithIdentity("jobDailyRemind", "Remind")
                .Build();
 
@@ -35,6 +36,19 @@ namespace DailyRemindPlus
                                     .Build();
 
             _scheduler.ScheduleJob(jobDailyRemind, tgDailyRemind);
+
+            //周报
+            IJobDetail jobWeekRemind = JobBuilder.Create<WeekRemindJob>()
+              .WithIdentity("jobWeekRemind", "Remind")
+              .Build();
+
+            ITrigger tgWeekRemind = TriggerBuilder.Create()
+                                    .WithIdentity("tgWeekRemind", "Remind")
+                                    .StartNow()
+                                    .WithCronSchedule("0 0 18 ? * FRI")
+                                    .Build();
+
+            _scheduler.ScheduleJob(jobWeekRemind, tgWeekRemind);
 
             _scheduler.Start();
         }
