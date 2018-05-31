@@ -5,6 +5,8 @@ using System.Text;
 using System.Linq;
 using System.IO;
 using Newtonsoft.Json;
+using System.Web;
+using DailyRemindPlus.Extentions;
 
 namespace DailyRemindPlus
 {
@@ -20,16 +22,21 @@ namespace DailyRemindPlus
         {
             if (SetCookies())
             {
-                var listModels = GetList();
-                var str = DateTime.Now.ToString("yyyyMMdd");
-                var result = listModels.Any(p => p.BillDate == str);
+                var users = UsersConfig.GetAllUsers();
 
-                if (!result)
+                users.ForEach(f =>
                 {
-                    string title = $"{DateTime.Now.ToString("yyyy-MM-dd")} 日报填写提醒";
-                    string content = $"Hi,< br />< b >{ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")}< b /> 检测到你没有填写日报,请安排时间填写! < br /> < a href =\"http://192.168.1.7/EIPDevManager/Login\">前往</a> ";
-                    EmailHelper.SendEmail(title, content);
-                }
+                    var listModels = GetList(f.Name);
+                    var str = DateTime.Now.ToString("yyyyMMdd");
+                    var result = listModels.Any(p => p.BillDate == str);
+
+                    if (!result)
+                    {
+                        string title = $"{DateTime.Now.ToString("yyyy-MM-dd")} 日报填写提醒";
+                        string content = $"Hi,{ DateTime.Now.ToString("yyyy-MM-dd HH:mm:ss")} 检测到你没有填写日报,请安排时间前往 http://192.168.1.7/EIPDevManager/Login 填写!";
+                        EmailHelper.SendEmail(title, content, f.Name, f.Email);
+                    }
+                });
             }
         }
 
@@ -52,9 +59,11 @@ namespace DailyRemindPlus
         /// 获取日报列表
         /// </summary>
         /// <returns></returns>
-        private List<DailyModel> GetList()
+        private List<DailyModel> GetList(string name)
         {
-            var request = (HttpWebRequest)WebRequest.Create(ConstTag.DailyUrl);
+            name = HttpUtility.UrlEncode(name, Encoding.UTF8);
+            var url = ConstTag.DailyUrl.Replace("{0}", name);
+            var request = (HttpWebRequest)WebRequest.Create(url);
             request.Method = "GET";
             request.UserAgent = "Mozilla/5.0 (Windows NT 6.1; WOW64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/65.0.3325.181 Safari/537.36";
             request.ContentType = "application/json; charset=utf-8";

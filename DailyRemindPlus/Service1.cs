@@ -9,6 +9,10 @@ using System.Text;
 using System.Threading.Tasks;
 using Quartz;
 using Quartz.Impl;
+using Microsoft.Owin.Hosting;
+using Owin;
+using CrystalQuartz.Owin;
+using log4net;
 
 namespace DailyRemindPlus
 {
@@ -20,41 +24,57 @@ namespace DailyRemindPlus
         }
 
         private static IScheduler _scheduler;
+        private static ILog _log = LogManager.GetLogger(typeof(Service1));
         protected override void OnStart(string[] args)
         {
-            _scheduler = StdSchedulerFactory.GetDefaultScheduler();
+            try
+            {
+                _scheduler = StdSchedulerFactory.GetDefaultScheduler();
+                //日报
+                IJobDetail jobDailyRemind = JobBuilder.Create<DailyRemindJob>()
+                   .WithIdentity("jobDailyRemind", "Remind")
+                   .Build();
 
-            //日报
-            IJobDetail jobDailyRemind = JobBuilder.Create<WeekRemindJob>()
-               .WithIdentity("jobDailyRemind", "Remind")
-               .Build();
+                ITrigger tgDailyRemind = TriggerBuilder.Create()
+                                        .WithIdentity("tgDailyRemind", "Remind")
+                                        .StartNow()
+                                        .WithCronSchedule("0 0 18 * * ?")
+                                        .Build();
 
-            ITrigger tgDailyRemind = TriggerBuilder.Create()
-                                    .WithIdentity("tgDailyRemind", "Remind")
-                                    .StartNow()
-                                    .WithCronSchedule("0 0 18 * * ?")
-                                    .Build();
+                _scheduler.ScheduleJob(jobDailyRemind, tgDailyRemind);
 
-            _scheduler.ScheduleJob(jobDailyRemind, tgDailyRemind);
+                //周报
+                IJobDetail jobWeekRemind = JobBuilder.Create<WeekRemindJob>()
+                  .WithIdentity("jobWeekRemind", "Remind")
+                  .Build();
 
-            //周报
-            IJobDetail jobWeekRemind = JobBuilder.Create<WeekRemindJob>()
-              .WithIdentity("jobWeekRemind", "Remind")
-              .Build();
+                ITrigger tgWeekRemind = TriggerBuilder.Create()
+                                        .WithIdentity("tgWeekRemind", "Remind")
+                                        .StartNow()
+                                        .WithCronSchedule("0 0 18 ? * FRI")
+                                        .Build();
 
-            ITrigger tgWeekRemind = TriggerBuilder.Create()
-                                    .WithIdentity("tgWeekRemind", "Remind")
-                                    .StartNow()
-                                    .WithCronSchedule("0 0 18 ? * FRI")
-                                    .Build();
+                _scheduler.ScheduleJob(jobWeekRemind, tgWeekRemind);
 
-            _scheduler.ScheduleJob(jobWeekRemind, tgWeekRemind);
+                Action<IAppBuilder> startup = app =>
+                {
+                    app.UseCrystalQuartz(_scheduler);
+                };
 
-            _scheduler.Start();
+                WebApp.Start("http://localhost:9876/", startup);
+                _scheduler.Start();
+
+                _log.Info("服务启动完成");
+            }
+            catch (Exception e)
+            {
+                _log.Info(e);
+            }
         }
 
         protected override void OnStop()
         {
+            _log.Info("服务停止");
         }
     }
 }

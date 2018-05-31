@@ -1,11 +1,11 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
-# Visual Studio 14
-VisualStudioVersion = 14.0.25420.1
+# Visual Studio 15
+VisualStudioVersion = 15.0.27428.2027
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyRemindPlus", "DailyRemindPlus\DailyRemindPlus.csproj", "{2AB62F93-64E4-4F22-9C87-6E4E3D9AD8AA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyRemindPlus.Test", "DailyRemindPlus.Test\DailyRemindPlus.Test.csproj", "{EE3A64F5-E575-4A61-9BE4-184D426980F0}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "DailyRemindPlus.Test", "DailyRemindPlus.Test\DailyRemindPlus.Test.csproj", "{E38DC4FE-EC8F-4902-9A3D-282C278D07DF}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -17,12 +17,15 @@ Global
 		{2AB62F93-64E4-4F22-9C87-6E4E3D9AD8AA}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{2AB62F93-64E4-4F22-9C87-6E4E3D9AD8AA}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{2AB62F93-64E4-4F22-9C87-6E4E3D9AD8AA}.Release|Any CPU.Build.0 = Release|Any CPU
-		{EE3A64F5-E575-4A61-9BE4-184D426980F0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{EE3A64F5-E575-4A61-9BE4-184D426980F0}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{EE3A64F5-E575-4A61-9BE4-184D426980F0}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{EE3A64F5-E575-4A61-9BE4-184D426980F0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E38DC4FE-EC8F-4902-9A3D-282C278D07DF}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E38DC4FE-EC8F-4902-9A3D-282C278D07DF}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E38DC4FE-EC8F-4902-9A3D-282C278D07DF}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E38DC4FE-EC8F-4902-9A3D-282C278D07DF}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {CE3D7A8A-B820-4B0B-AEDB-4958616894F5}
 	EndGlobalSection
 EndGlobal
